@@ -6,7 +6,7 @@ import numpy as np
 
 
 adaface_models = {
-    'ir_50':"pretrained/adaface_ir50_ms1mv2.ckpt",
+    'ir_50':"pretrained/adaface_ir50_casia.ckpt",
 }
 
 def load_pretrained_model(architecture='ir_50'):
