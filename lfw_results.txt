@@ -1,0 +1,18 @@
+ADAFACE EVALUATION ON LFW DATASET
+================================================================================
+
+Total Pairs: 996
+Match Pairs: 497
+Mismatch Pairs: 499
+
+Accuracy: 0.9729
+Best Threshold: 0.2800
+Precision: 1.0000
+Recall: 0.9457
+F1-Score: 0.9721
+ROC AUC: 0.9790
+
+True Positives: 470
+True Negatives: 499
+False Positives: 0
+False Negatives: 27
