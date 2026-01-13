@@ -1,26 +1,11 @@
 import net
 import torch
 from face_alignment import align
+from inference import load_pretrained_model, to_input
 
-
-def load_pretrained_model(model_path):
-    """Load AdaFace pretrained model"""
-    model = net.build_model('ir_50')
-    statedict = torch.load(model_path, map_location='cpu')['state_dict']
-    model_statedict = {key[6:]:val for key, val in statedict.items() if key.startswith('model.')}
-    model.load_state_dict(model_statedict)
-    model.eval()
-    return model
-
-
-def to_input(pil_rgb_image):
-    """Convert PIL RGB image to BGR tensor input"""
-    import numpy as np
-    np_img = np.array(pil_rgb_image)
-    brg_img = ((np_img[:,:,::-1] / 255.) - 0.5) / 0.5
-    tensor = torch.tensor([brg_img.transpose(2,0,1)]).float()
-    return tensor
-
+adaface_models = {
+    'ir_50':"pretrained/adaface_ir50_casia.ckpt",
+}
 
 def compare_two_faces(model, image_path1, image_path2, threshold=0.6):
     """So sánh 2 khuôn mặt
@@ -69,11 +54,12 @@ def compare_two_faces(model, image_path1, image_path2, threshold=0.6):
 # ===== SỬ DỤNG =====
 if __name__ == '__main__':
     # Load model
-    model = load_pretrained_model('models/adaface_ir50_casia.ckpt')
+    # Hoặc đường dẫn pretrained/adaface_ir50_casia.ckpt
+    model = load_pretrained_model('ir_50')
     print("✓ Đã load model thành công!\n")
     
     # So sánh 2 ảnh - THAY ĐỔI ĐƯỜNG DẪN CỦA BẠN Ở ĐÂY
-    image1 = 'F:\Biometric\datasets\lfw-deepfunneled\lfw-deepfunneled\Aaron_Peirsol\Aaron_Peirsol_0001.jpg'  # Thay bằng đường dẫn ảnh của bạn
-    image2 = 'F:\Biometric\datasets\lfw-deepfunneled\lfw-deepfunneled\Aaron_Guiel\Aaron_Guiel_0001.jpg'  # Thay bằng đường dẫn ảnh của bạn
+    image1 = 'face_alignment/test_images/img1.jpeg'  # Thay bằng đường dẫn ảnh của bạn
+    image2 = 'face_alignment/test_images/img2.jpeg'  # Thay bằng đường dẫn ảnh của bạn
     
     similarity = compare_two_faces(model, image1, image2)

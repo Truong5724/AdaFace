@@ -4,7 +4,6 @@ import os
 from face_alignment import align
 import numpy as np
 
-
 adaface_models = {
     'ir_50':"pretrained/adaface_ir50_casia.ckpt",
 }
