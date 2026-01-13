@@ -22,12 +22,19 @@ def load_pretrained_model(architecture='ir_50'):
 def to_input(pil_rgb_image):
     np_img = np.array(pil_rgb_image)
     brg_img = ((np_img[:,:,::-1] / 255.) - 0.5) / 0.5
-    tensor = torch.tensor([brg_img.transpose(2,0,1)]).float()
+
+    # Convert to numpy array first then to tensor in order to reduce calculated time
+    tensor = torch.from_numpy(np.asarray([brg_img.transpose(2,0,1)])).float()
     return tensor
 
 if __name__ == '__main__':
 
     model = load_pretrained_model('ir_50')
+
+    # Checking pretrained model
+    # total_params = sum(p.numel() for p in model.parameters())
+    # print(f'Total parameters: {total_params:,}')
+
     feature, norm = model(torch.randn(2,3,112,112))
 
     test_image_path = 'face_alignment/test_images'
