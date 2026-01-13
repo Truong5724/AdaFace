@@ -12,3 +12,6 @@ scripts/run_debug*
 
 # Data
 faces_webface_112x112
+
+# venv
+.venv
