@@ -2,7 +2,6 @@ from typing import Tuple
 import numpy as np
 import torch
 from PIL import Image
-from torch.autograd import Variable
 
 import sys
 import os
@@ -16,7 +15,7 @@ from mtcnn_pytorch.src.align_trans import get_reference_facial_points, warp_and_
 
 
 class MTCNN():
-    def __init__(self, device: str = 'cuda:0', crop_size: Tuple[int, int] = (112, 112)):
+    def __init__(self, device: str = 'cpu', crop_size: Tuple[int, int] = (112, 112)):
 
         assert device in ['cuda:0', 'cpu']
         self.device = torch.device(device)
