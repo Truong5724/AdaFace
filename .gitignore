@@ -11,7 +11,7 @@ result
 scripts/run_debug*
 
 # Data
-faces_webface_112x112
+CASIA-WebFace-10K
 
 # venv
 .venv

@@ -1,0 +1,10 @@
+ADAFACE EVALUATION ON CASIA-WebFace-10K DATASET
+================================================================================
+
+Total Pairs: 1930
+Positive Pairs: 961
+Negative Pairs: 969
+
+Accuracy: 0.9720
+Best Threshold: 0.2000
+TP: 913, TN: 963, FP: 6, FN: 48
