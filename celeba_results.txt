@@ -1,0 +1,18 @@
+ADAFACE EVALUATION ON CELEBA-500 DATASET
+================================================================================
+
+Total Pairs: 3201
+Match Pairs: 1229
+Mismatch Pairs: 1972
+
+Accuracy: 0.9784
+Best Threshold: 0.2100
+Precision: 0.9907
+Recall: 0.9528
+F1-Score: 0.9714
+ROC AUC: 0.9886
+
+True Positives: 1171
+True Negatives: 1961
+False Positives: 11
+False Negatives: 58

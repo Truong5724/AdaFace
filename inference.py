@@ -5,7 +5,7 @@ from face_alignment import align
 import numpy as np
 
 adaface_models = {
-    'ir_50':"pretrained/adaface_ir50_casia.ckpt",
+    'ir_50':"models/adaface_ir50_casia.ckpt",
 }
 
 def load_pretrained_model(architecture='ir_50'):

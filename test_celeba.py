@@ -14,11 +14,12 @@ adaface_models = {
     'ir_50':"models/adaface_ir50_casia.ckpt",
 }
 
-def get_lfw_image_path(lfw_dir, name, imagenum):
-    """Get full path to LFW image"""
-    # Format: PersonName/PersonName_0001.jpg
-    image_name = f"{name}_{imagenum:04d}.jpg"
-    image_path = os.path.join(lfw_dir, name, image_name)
+def get_celeba_image_path(celeba_dir, name, imagenum):
+    """Get full path to CelebA image"""
+    # Format: 79/153977.jpg (folder_id/image_id.jpg)
+    folder_name = str(name)
+    image_name = f"{imagenum}.jpg"
+    image_path = os.path.join(celeba_dir, folder_name, image_name)
     return image_path
 
 
@@ -60,12 +61,12 @@ def compute_similarity(feature1, feature2):
     return similarity
 
 
-def evaluate_lfw_pairs(model, lfw_dir, pairs_file, is_match=True):
-    """Evaluate on LFW pairs
+def evaluate_celeba_pairs(model, celeba_dir, pairs_file, is_match=True):
+    """Evaluate on CelebA pairs
     
     Args:
         model: AdaFace model
-        lfw_dir: Directory containing LFW images
+        celeba_dir: Directory containing CelebA images
         pairs_file: CSV file with pairs
         is_match: True for same person pairs, False for different person pairs
     
@@ -92,8 +93,8 @@ def evaluate_lfw_pairs(model, lfw_dir, pairs_file, is_match=True):
             imagenum1 = int(row['imagenum1'])
             imagenum2 = int(row['imagenum2'])
             
-            path1 = get_lfw_image_path(lfw_dir, name, imagenum1)
-            path2 = get_lfw_image_path(lfw_dir, name, imagenum2)
+            path1 = get_celeba_image_path(celeba_dir, name, imagenum1)
+            path2 = get_celeba_image_path(celeba_dir, name, imagenum2)
             
             feature1 = extract_feature(model, path1)
             feature2 = extract_feature(model, path2)
@@ -116,8 +117,8 @@ def evaluate_lfw_pairs(model, lfw_dir, pairs_file, is_match=True):
             name2 = row.iloc[2]  # Second name column
             imagenum2 = int(row.iloc[3])
             
-            path1 = get_lfw_image_path(lfw_dir, name1, imagenum1)
-            path2 = get_lfw_image_path(lfw_dir, name2, imagenum2)
+            path1 = get_celeba_image_path(celeba_dir, name1, imagenum1)
+            path2 = get_celeba_image_path(celeba_dir, name2, imagenum2)
             
             feature1 = extract_feature(model, path1)
             feature2 = extract_feature(model, path2)
@@ -190,7 +191,7 @@ def compute_metrics(similarities, labels, thresholds=None):
     }
 
 
-def plot_roc_curve(fpr, tpr, roc_auc, output_path='lfw_roc_curve.png'):
+def plot_roc_curve(fpr, tpr, roc_auc, output_path='celeba_roc_curve.png'):
     """Plot ROC curve"""
     plt.figure(figsize=(10, 8))
     plt.plot(fpr, tpr, color='darkorange', lw=2, 
@@ -200,7 +201,7 @@ def plot_roc_curve(fpr, tpr, roc_auc, output_path='lfw_roc_curve.png'):
     plt.ylim([0.0, 1.05])
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
-    plt.title('ROC Curve - AdaFace on LFW')
+    plt.title('ROC Curve - AdaFace on CelebA-500')
     plt.legend(loc="lower right")
     plt.grid(True, alpha=0.3)
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
@@ -208,7 +209,7 @@ def plot_roc_curve(fpr, tpr, roc_auc, output_path='lfw_roc_curve.png'):
     plt.close()
 
 
-def plot_distribution(match_sims, mismatch_sims, output_path='lfw_similarity_distribution.png'):
+def plot_distribution(match_sims, mismatch_sims, output_path='celeba_similarity_distribution.png'):
     """Plot similarity score distribution"""
     plt.figure(figsize=(12, 6))
     
@@ -217,7 +218,7 @@ def plot_distribution(match_sims, mismatch_sims, output_path='lfw_similarity_dis
     
     plt.xlabel('Cosine Similarity')
     plt.ylabel('Frequency')
-    plt.title('Similarity Score Distribution - AdaFace on LFW')
+    plt.title('Similarity Score Distribution - AdaFace on CelebA-500')
     plt.legend()
     plt.grid(True, alpha=0.3)
     
@@ -228,14 +229,14 @@ def plot_distribution(match_sims, mismatch_sims, output_path='lfw_similarity_dis
 
 if __name__ == '__main__':
     print("="*80)
-    print("ADAFACE EVALUATION ON LFW DATASET")
+    print("ADAFACE EVALUATION ON CELEBA-500 DATASET")
     print("="*80)
     
     # Configuration
     model_path = 'models/adaface_ir50_casia.ckpt'
-    lfw_dir = '../datasets/lfw-deepfunneled/lfw-deepfunneled'
-    match_pairs_file = '../datasets/matchpairsDevTest.csv'
-    mismatch_pairs_file = '../datasets/mismatchpairsDevTest.csv'
+    celeba_dir = '../datasets/celeba-500'
+    match_pairs_file = '../datasets/matchpairs_celeba.csv'
+    mismatch_pairs_file = '../datasets/mismatchpairs_celeba.csv'
     
     # Load model
     print("\n→ Loading AdaFace model...")
@@ -243,13 +244,13 @@ if __name__ == '__main__':
     print("✓ Model loaded successfully!")
     
     # Evaluate on match pairs (same person)
-    match_sims, match_labels = evaluate_lfw_pairs(
-        model, lfw_dir, match_pairs_file, is_match=True
+    match_sims, match_labels = evaluate_celeba_pairs(
+        model, celeba_dir, match_pairs_file, is_match=True
     )
     
     # Evaluate on mismatch pairs (different person)
-    mismatch_sims, mismatch_labels = evaluate_lfw_pairs(
-        model, lfw_dir, mismatch_pairs_file, is_match=False
+    mismatch_sims, mismatch_labels = evaluate_celeba_pairs(
+        model, celeba_dir, mismatch_pairs_file, is_match=False
     )
     
     # Combine results
@@ -265,7 +266,7 @@ if __name__ == '__main__':
     
     # Print results
     print("\n" + "="*80)
-    print("📊 KẾT QUẢ ĐÁNH GIÁ TRÊN LFW")
+    print("📊 KẾT QUẢ ĐÁNH GIÁ TRÊN CELEBA-500")
     print("="*80)
     print(f"\n{'Metric':<20} {'Value':>15}")
     print("-" * 40)
@@ -315,8 +316,8 @@ if __name__ == '__main__':
     
     # Save results to file
     print("\n→ Saving results to file...")
-    with open('lfw_results.txt', 'w', encoding='utf-8') as f:
-        f.write("ADAFACE EVALUATION ON LFW DATASET\n")
+    with open('celeba_results.txt', 'w', encoding='utf-8') as f:
+        f.write("ADAFACE EVALUATION ON CELEBA-500 DATASET\n")
         f.write("="*80 + "\n\n")
         f.write(f"Total Pairs: {len(all_similarities)}\n")
         f.write(f"Match Pairs: {len(match_sims)}\n")
@@ -332,7 +333,7 @@ if __name__ == '__main__':
         f.write(f"False Positives: {metrics['fp']}\n")
         f.write(f"False Negatives: {metrics['fn']}\n")
     
-    print("✓ Đã lưu kết quả: lfw_results.txt")
+    print("✓ Đã lưu kết quả: celeba_results.txt")
     
     print("\n" + "="*80)
     print("✓ HOÀN THÀNH ĐÁNH GIÁ!")
