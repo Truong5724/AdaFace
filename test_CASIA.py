@@ -176,7 +176,7 @@ if __name__ == '__main__':
     
     # Print results
     print("\n" + "="*80)
-    print("📊 KẾT QUẢ ĐÁNH GIÁ TRÊN CASIA-WebFace-10K")
+    print(" KẾT QUẢ ĐÁNH GIÁ TRÊN CASIA-WebFace-10K")
     print("="*80)
     print(f"\n{'Metric':<20} {'Value':>15}")
     print("-" * 40)

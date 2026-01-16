@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from inference import load_pretrained_model, to_input
 
 adaface_models = {
-    'ir_50':"models/adaface_ir50_casia.ckpt",
+    'ir_50':"pretrained/adaface_ir50_casia.ckpt",
 }
 
 def get_lfw_image_path(lfw_dir, name, imagenum):
@@ -232,10 +232,10 @@ if __name__ == '__main__':
     print("="*80)
     
     # Configuration
-    model_path = 'models/adaface_ir50_casia.ckpt'
-    lfw_dir = '../datasets/lfw-deepfunneled/lfw-deepfunneled'
-    match_pairs_file = '../datasets/matchpairsDevTest.csv'
-    mismatch_pairs_file = '../datasets/mismatchpairsDevTest.csv'
+    model_path = 'pretrained/adaface_ir50_casia.ckpt'
+    lfw_dir = 'datasets/lfw-deepfunneled/lfw-deepfunneled'
+    match_pairs_file = 'datasets/matchpairsDevTest.csv'
+    mismatch_pairs_file = 'datasets/mismatchpairsDevTest.csv'
     
     # Load model
     print("\n→ Loading AdaFace model...")

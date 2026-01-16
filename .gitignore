@@ -12,6 +12,13 @@ scripts/run_debug*
 
 # Data
 CASIA-WebFace-10K
+#celeba-500
+
+# Local datasets (images, binaries, archives)
+datasets/
+# keep lightweight docs/configs if needed
+#!datasets/*.md
+#!datasets/*.txt
 
 # venv
 .venv

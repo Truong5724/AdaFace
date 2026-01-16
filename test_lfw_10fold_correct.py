@@ -71,42 +71,53 @@ def compute_similarity(f1, f2):
 
 
 def parse_lfw_pairs(pairs_file):
-    """Parse LFW pairs.txt file
-    Format:
-    - Same person: name imagenum1 imagenum2
-    - Different: name1 imagenum1 name2 imagenum2
+    """Parse LFW pairs.csv (supports 3-column positive rows and 4-column negative rows).
+
+    Formats (comma-separated, trailing commas allowed):
+    - Same person: name, imagenum1, imagenum2[,]
+    - Different:   name1, imagenum1, name2, imagenum2
+    Header row is ignored if present.
     """
     pairs = []
-    
-    with open(pairs_file, 'r') as f:
-        lines = f.readlines()
-        
-        # Skip header
-        for line in lines[1:]:
+
+    with open(pairs_file, 'r', encoding='utf-8') as f:
+        for line_idx, line in enumerate(f):
             line = line.strip()
             if not line:
                 continue
-            
-            parts = line.rstrip(',').split(',')
-            parts = [p.strip() for p in parts]
-            
-            # Filter out empty strings
-            parts = [p for p in parts if p]
-            
+
+            # Skip header if present (first token is usually "name")
+            if line_idx == 0 and line.lower().startswith('name'):
+                continue
+
+            # Split by comma, drop empty fields (handles trailing commas)
+            parts = [p.strip() for p in line.split(',') if p.strip()]
+            if not parts:
+                continue
+
             if len(parts) == 3:
                 # Same person: name, imagenum1, imagenum2
                 name = parts[0]
-                imagenum1 = int(parts[1])
-                imagenum2 = int(parts[2])
+                try:
+                    imagenum1 = int(parts[1])
+                    imagenum2 = int(parts[2])
+                except ValueError:
+                    continue  # Skip malformed rows
                 pairs.append((1, name, imagenum1, name, imagenum2))
             elif len(parts) == 4:
                 # Different person: name1, imagenum1, name2, imagenum2
                 name1 = parts[0]
-                imagenum1 = int(parts[1])
                 name2 = parts[2]
-                imagenum2 = int(parts[3])
+                try:
+                    imagenum1 = int(parts[1])
+                    imagenum2 = int(parts[3])
+                except ValueError:
+                    continue  # Skip malformed rows
                 pairs.append((0, name1, imagenum1, name2, imagenum2))
-    
+            else:
+                # Unexpected column count; skip
+                continue
+
     return pairs
 
 
@@ -196,8 +207,8 @@ def main():
     
     # Configuration
     model_path = 'pretrained/adaface_ir50_casia.ckpt'
-    lfw_dir = '../datasets/lfw-deepfunneled/lfw-deepfunneled'
-    pairs_file = '../datasets/pairs.csv'
+    lfw_dir = 'datasets/lfw-deepfunneled/lfw-deepfunneled'
+    pairs_file = 'datasets/pairs.csv'
     
     use_flip = True  # Use flip augmentation
     
@@ -240,7 +251,7 @@ def main():
         mean_threshold = np.mean(fold_thresholds)
         
         print("\n" + "="*80)
-        print("📊 FINAL RESULTS (10-FOLD CROSS-VALIDATION)")
+        print("FINAL RESULTS (10-FOLD CROSS-VALIDATION)")
         print("="*80)
         print(f"\nMean Accuracy: {mean_accuracy:.4f} ± {std_accuracy:.4f}")
         print(f"Mean Threshold: {mean_threshold:.4f}")

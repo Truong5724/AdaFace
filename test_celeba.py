@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from inference import load_pretrained_model, to_input
 
 adaface_models = {
-    'ir_50':"models/adaface_ir50_casia.ckpt",
+    'ir_50':"pretrained/adaface_ir50_casia.ckpt",
 }
 
 def get_celeba_image_path(celeba_dir, name, imagenum):
@@ -233,10 +233,10 @@ if __name__ == '__main__':
     print("="*80)
     
     # Configuration
-    model_path = 'models/adaface_ir50_casia.ckpt'
-    celeba_dir = '../datasets/celeba-500'
-    match_pairs_file = '../datasets/matchpairs_celeba.csv'
-    mismatch_pairs_file = '../datasets/mismatchpairs_celeba.csv'
+    model_path = 'pretrained/adaface_ir50_casia.ckpt'
+    celeba_dir = 'datasets/celeba-500'
+    match_pairs_file = 'datasets/matchpairs_celeba.csv'
+    mismatch_pairs_file = 'datasets/mismatchpairs_celeba.csv'
     
     # Load model
     print("\n→ Loading AdaFace model...")
